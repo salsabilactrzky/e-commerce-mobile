@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:e_commerce/screens/productentry_form.dart';
+import 'package:e_commerce/screens/list_product.dart';
+import 'package:e_commerce/screens/login.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 class ItemHomepage {
     final String name;
@@ -15,6 +19,7 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     Color buttonColor;
     if (item.name == "Lihat Daftar Produk") {
       buttonColor = Colors.blue;
@@ -30,7 +35,7 @@ class ItemCard extends StatelessWidget {
       color: buttonColor,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           // Menampilkan pesan SnackBar saat card ditekan.
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -46,9 +51,36 @@ class ItemCard extends StatelessWidget {
               ),
             );
           } else if (item.name == "Lihat Daftar Produk") {
-            // halaman lihat produk
+            // Implementasi untuk Lihat Daftar Produk
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProductEntryPage(),
+              ),
+            );
           } else if (item.name == "Logout") {
-            // untuk logout
+            final response = await request.logout(
+              "http://localhost:8000/auth/logout/",
+            );
+            String message = response["message"];
+            if (context.mounted) {
+              if (response['status']) {
+                String uname = response["username"];
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("$message See you later, $uname."),
+                ));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(message),
+                  ),
+                );
+              }
+            }
           }
         },
         // Container untuk menyimpan Icon dan Text

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:e_commerce/screens/menu.dart';
 import 'package:e_commerce/widgets/left_drawer.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'dart:convert';
 
 class ProductEntryFormPage extends StatefulWidget {
   const ProductEntryFormPage({super.key});
@@ -21,6 +25,8 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -246,38 +252,43 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
                         Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Produk berhasil disimpan'),
-                            content: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Product Name: $_name'),
-                                  Text('Price: $_price'),
-                                  Text('Description: $_description'),
-                                  Text('Category: $_category'),
-                                  Text('Brand: $_brand'),
-                                  Text('Condition: $_condition'),
-                                  Text('Stock: $_stock'),
-                                  Text('Image: $_image'),
-                                ],
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                child: const Text('OK'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  _formKey.currentState!.reset();
-                                },
-                              ),
-                            ],
-                          ),
+                        // Kirim data ke Django
+                        final response = await request.postJson(
+                          "http://localhost:8000/create-product-flutter/",
+                          jsonEncode(<String, String>{
+                            'name': _name,
+                            'price': _price.toString(),
+                            'description': _description,
+                            'category': _category,
+                            'brand': _brand, // handle null as empty string
+                            'condition': _condition,
+                            'stock': _stock.toString(),
+                            'image': _image, // handle null as empty string
+                          }),
                         );
+                        if (context.mounted) {
+                          if (response['status'] == 'success') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Product saved successfully!")),
+                            );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => MyHomePage()),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Error occurred, please try again."),
+                              ),
+                            );
+                          }
+                        } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Form validation failed")),
+                        );
+                      }
                       }
                     },
                     child: const Text(
