@@ -51,3 +51,45 @@
 
 5. Bagaimana cara kamu menangani navigasi dalam aplikasi dengan banyak halaman pada Flutter?
     Saya menggunakan Navigator dan MaterialPageRoute untuk navigasi antar halaman. Pada onTap tombol, saya pakai Navigator.push untuk menambah halaman baru di atas stack atau Navigator.pushReplacement menggantikan halaman.
+
+
+**TUGAS 9**
+*Salsabila Caturizky Farindarmawan*
+*2306275664*
+
+1. Jelaskan mengapa kita perlu membuat model untuk melakukan pengambilan ataupun pengiriman data JSON? Apakah akan terjadi error jika kita tidak membuat model terlebih dahulu?
+    Karena pembuatan model untuk data JSON mempermudah pengelolaan data. Dengan pembuatan model, data JSON yang diterima akan dikonversi menjadi objek yang terstruktur, dan dapat memanfaatkan properti model untuk mengakses atribut tertentu.
+    Jika tidak membuat model, data JSON harus dimanipulasi secara langsung. Yang mana lebih mungkin error terutama saat struktur data berubah, membuat kode menjadi sulit dipahami dan sulit dimaintain.
+2. Jelaskan fungsi dari library http yang sudah kamu implementasikan pada tugas ini
+    Library http berfungsi untuk berkomunikasi dengan server Django. Sehingga aplikasi Flutter dapat mengirimkan permintaan/request dan menerima respons dari server. GET untuk ambil data produk dari endpoint JSON di Django. Lalu, POST untuk mengirimkan data produk baru dari Flutter ke Django. Library http jadi jembatan utama antara aplikasi Flutter dan Django.
+
+3. Jelaskan fungsi dari CookieRequest dan jelaskan mengapa instance CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter.
+    CookieRequest berfungsi untuk mempermudah pengelolaan session berbasis cookie di Flutter sehingga tidak perlu menyimpan dan mengirim cookie secara manual. Semua autentikasi seperti login dan logout diurus oleh CookieRequest.
+    Instance CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter menggunakan provider agar semua halaman bisa cek status login atau mengirim request ke server dengan mudah. Kalau tidak, maka harus atur ulang cookie setiap berpindah halaman.
+
+4. Jelaskan mekanisme pengiriman data mulai dari input hingga dapat ditampilkan pada Flutter.
+    Input : Pengguna mengisi form di halaman "Add Product" (ProductEntryFormPage).
+    Data dikirim ke Django:
+    Data form dikirimkan ke server Django lewat metode POST dengan CookieRequest. Django memproses data, simpan ke database, dan memberikan respons.
+    Pengambilan data kembali:
+    Aplikasi Flutter mengambil data produk dari endpoint JSON Django menggunakan metode GET.
+    Menampilkan data F;utter:
+    Data JSON yang diterima Flutter dikonversi ke model Dart (Porduct).
+    Produk ditampilkan di halaman daftar produk (ProductEntryPage) menggunakan ListView.
+
+5. Jelaskan mekanisme autentikasi dari login, register, hingga logout. Mulai dari input data akun pada Flutter ke Django hingga selesainya proses autentikasi oleh Django dan tampilnya menu pada Flutter.
+    Register:
+    Pengguna mengisi username dan password di halaman Register. Lalu, data dikirimkan ke endpoint Django /auth/register/ pakai metode POST.
+    Jika valid, Django buat akun baru dan mengembalikan respons sukses.
+
+    Login:
+    Pengguna memasukkan username dan password di halaman Login. Lalu, data dikirimkan ke endpoint /auth/login/ pakai POST. Django verifikasi data dan mengembalikan cookie session. Flutter menyimpan cookie tersebut menggunakan CookieRequest untuk autentikasi berikutnya. Lalu, pengguna diarahkan ke menu (MyHomePage).
+
+    Logout:
+    Pengguna klik Logout, Flutter mengirim request ke endpoint /auth/logout/. Lalau, Django menghapus cookie session, dan Flutter memperbarui status login.
+
+6. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step! (bukan hanya sekadar mengikuti tutorial).
+    Membuat halaman registerpage di register.dart dengan form dan validasi, kirim data ke endpoint django /auth/register/ dgn CookieRequest di Flutter. Mmebuat halaman loginpage di login.dart dengan form dan validasi, kirim data endpoint Django /auth/login/ dgn CookieRequest.
+    Menggunakan library pbp_django_auth untuk euthentication session cookie, django mengatur endpoint register login logout, di flutter memakai cookie untuk setiap request.
+    Membuat model product di productentry.dart dengan atribut seperti pada django, pakai fromJson dan toJson.
+    Membuat halaman ProductEntryPage di list_product.dart, ambil data dari endpoint django /json/ pakai cookirequest. Filter produk hanya milik pengguna, menampilkan atribut name price description. Membuat productdetailpage di product_detail.dart menampilkan semua atribut. Atur endpoint /json/ di django filter(iser=request.user).

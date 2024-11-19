@@ -75,7 +75,7 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.add_reaction_rounded),
-            title: const Text('Daftar Produk'),
+            title: const Text('Product List'),
             onTap: () {
               // Route menu ke halaman daftar produk
               Navigator.push(

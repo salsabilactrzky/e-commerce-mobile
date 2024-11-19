@@ -20,11 +20,20 @@ class ProductDetailPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                product.fields.name,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  decoration: BoxDecoration(
+                    color:  Colors.lightBlue[200],
+                    borderRadius: BorderRadius.circular(6), // Membuat sudut melengkung
+                  ),
+                child: Text(
+                  product.fields.name,
+                  style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 35),
               Text(
                 "Price: Rp${product.fields.price}",
                 style: const TextStyle(fontSize: 16),),

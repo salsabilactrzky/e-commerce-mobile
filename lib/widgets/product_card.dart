@@ -21,9 +21,9 @@ class ItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     Color buttonColor;
-    if (item.name == "Lihat Daftar Produk") {
+    if (item.name == "Product List") {
       buttonColor = Colors.blue;
-    } else if (item.name == "Tambah Produk") {
+    } else if (item.name == "Add Product") {
       buttonColor = Colors.green;
     } else if (item.name == "Logout") {
       buttonColor = Colors.red;
@@ -40,18 +40,18 @@ class ItemCard extends StatelessWidget {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!"))
+              SnackBar(content: Text("You have clicked the ${item.name} button!"))
             );
           // Navigate ke route yang sesuai
-          if (item.name == "Tambah Produk") {
+          if (item.name == "Add Product") {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const ProductEntryFormPage(),
               ),
             );
-          } else if (item.name == "Lihat Daftar Produk") {
-            // Implementasi untuk Lihat Daftar Produk
+          } else if (item.name == "Product List") {
+            // Implementasi untuk Product List
             Navigator.push(
               context,
               MaterialPageRoute(
